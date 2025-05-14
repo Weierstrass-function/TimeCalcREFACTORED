@@ -19,6 +19,7 @@ namespace TimeCalcREFACTORED
         public MainWindow()
         {
             InitializeComponent();
+            ResultText.Text = int.MaxValue.ToString();
         }
 
         private void OnEnterClick(object sender, RoutedEventArgs e)
