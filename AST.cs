@@ -123,6 +123,10 @@ namespace TimeCalcREFACTORED
                 if (currentChar == ')')
                 {
                     node = ParseExpr();
+
+                    if (_tokens.Count == 0)
+                        throw new FormatException("Не для всех закрывающих скобок ')' есть соответствующие открывающие '('");
+
                     token = _tokens.Pop();
 
                     if (!(token.Value is char nextChar && nextChar == '('))
