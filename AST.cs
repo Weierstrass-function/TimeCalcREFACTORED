@@ -39,6 +39,9 @@ namespace TimeCalcREFACTORED
         /// <exception cref="FormatException"></exception>
         public AST(Stack<Token> tokens)
         {
+            if (tokens.Count == 0)
+                throw new FormatException("Введите выражение");
+
             _tokens = tokens;
             Root = ParseExpr();
         }
