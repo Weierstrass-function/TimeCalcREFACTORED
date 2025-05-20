@@ -40,19 +40,7 @@ namespace TimeCalcREFACTORED
         public AST(Stack<Token> tokens)
         {
             _tokens = tokens;
-            //if (!ParenthesesChecker.CheckParentheses(tokens.ToList()))
-            //{
-            //    throw new FormatException("Скобки не сбалансированы. Возможно, вы пропустили закрывающую скобку или добавили лишнюю открывающую.");
-            //}
-            if (tokens.Count == 0)
-            {
-                throw new FormatException("Введите выражение!");
-            }
             Root = ParseExpr();
-            if (_tokens.Count != 0)
-            {
-                throw new FormatException("Не для всех открывающих скобок '(' есть соответствующие закрывающие ')'");
-            }
         }
 
         /// <summary>
@@ -90,13 +78,25 @@ namespace TimeCalcREFACTORED
             var node = ParseFactor();
 
             while (
-                _tokens.Count != 0 &&
-                _tokens.Peek().Value is char tokenVal &&
-                (tokenVal == '*' || tokenVal == '/')
+                    _tokens.Count != 0 &&
+                (_tokens.Peek().Value is char tokenVal &&
+                (tokenVal != '+' && tokenVal != '-' && tokenVal != '(') ||
+                _tokens.Peek().Type == TokenType.Operand
+                )
                 )
             {
-                _tokens.Pop();
-                node = new OperatorNode(ParseTerm(), tokenVal, node);
+                if (_tokens.Peek().Value is char tokenVal1 &&
+                    (tokenVal1 == '*' || tokenVal1 == '/'))
+                {
+
+                    _tokens.Pop();
+                    node = new OperatorNode(ParseTerm(), tokenVal1, node);
+                }
+                else
+                {
+                    node = new OperatorNode(ParseTerm(), '*', node);
+                }
+
             }
 
             return node;
@@ -123,24 +123,11 @@ namespace TimeCalcREFACTORED
                 if (currentChar == ')')
                 {
                     node = ParseExpr();
-
-                    if (_tokens.Count == 0)
-                        throw new FormatException("Не для всех закрывающих скобок ')' есть соответствующие открывающие '('");
-
-                    token = _tokens.Pop();
-
-                    if (!(token.Value is char nextChar && nextChar == '('))
-                    {
-                        throw new FormatException("Не для всех закрывающих скобок ')' есть соответствующие открывающие '('");
-                    }
-                }
-                else if (currentChar == '(')
-                {
-                    throw new FormatException("После открывающей скобки '(' ожидался операнд");
+                    token = _tokens.Pop(); // удаление (
                 }
                 else
                 {
-                    throw new FormatException($"После оператора '{currentChar}' должен быть операнд");
+                    throw new FormatException($"После '{currentChar}' должен быть операнд");
                 }
             }
             else

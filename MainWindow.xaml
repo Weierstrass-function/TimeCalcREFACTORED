@@ -5,14 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TimeCalcREFACTORED"
         mc:Ignorable="d"
-        Title="Time Calc" Height="350" Width="700">
+        Title="Time Calc" Height="350" Width="700"
+        PreviewKeyDown="Window_PreviewKeyDown">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBox Name="ResultText" Grid.Row="0" Margin="10" FontSize="24" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Right" KeyDown="ResultText_KeyDown"/>
+        <TextBox Name="ResultText" Grid.Row="0" Margin="10" FontSize="24" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
 
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>

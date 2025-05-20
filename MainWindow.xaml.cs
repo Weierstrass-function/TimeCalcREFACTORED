@@ -19,7 +19,6 @@ namespace TimeCalcREFACTORED
         public MainWindow()
         {
             InitializeComponent();
-            //ResultText.Text = int.MaxValue.ToString();
         }
 
         private void OnEnterClick(object sender, RoutedEventArgs e)
@@ -40,11 +39,17 @@ namespace TimeCalcREFACTORED
             }
         }
 
-        private void ResultText_KeyDown(object sender, KeyEventArgs e)
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
+                e.Handled = true; // Помечаем событие как обработанное
                 OnEnterClick(sender, e);
+            }
+
+            else if (!ResultText.IsFocused)
+            {
+                ResultText.Focus();
             }
         }
 

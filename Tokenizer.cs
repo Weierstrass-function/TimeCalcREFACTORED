@@ -58,6 +58,7 @@ namespace TimeCalcREFACTORED
             var tokens = new Stack<Token>();
 
             int i = 0;
+            int bracketCounter = 0;
             while (i < input.Length)
             {
                 if (char.IsWhiteSpace(input[i]))
@@ -80,6 +81,9 @@ namespace TimeCalcREFACTORED
                             )
                         )
                 {
+                    if (tokens.TryPeek(out var last) && last.Type == TokenType.Operand)
+                         throw new FormatException("Между операндами должны стоять скобки или операторы");
+
                     int start = i;
                     i++;
                     while (i < input.Length && char.IsDigit(input[i]) ||
@@ -107,6 +111,20 @@ namespace TimeCalcREFACTORED
                 // символ
                 else if (_allowedChars.Contains(input[i]))
                 {
+                    if (input[i] == '(')
+                    {
+                        bracketCounter++;
+                    }
+                    else if (input[i] == ')')
+                    {
+                        bracketCounter--;
+                    }
+
+                    if (bracketCounter < 0)
+                    {
+                        throw new FormatException("Скобка закрылась но не открылась");
+                    }
+
                     tokens.Push(Token.CreateSymbol(input[i]));
                     i++;
                 }
@@ -115,6 +133,11 @@ namespace TimeCalcREFACTORED
                 {
                     throw new FormatException($"Недопустимый символ '{input[i]}'");
                 }
+            }
+
+            if (bracketCounter > 0)
+            {
+                throw new FormatException("Скобка открылась но не закрылась");
             }
 
             return tokens;

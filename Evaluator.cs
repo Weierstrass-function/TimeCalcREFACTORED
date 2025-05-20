@@ -38,62 +38,24 @@ namespace TimeCalcREFACTORED
             dynamic left = Evaluate(node.Left);
             dynamic right = Evaluate(node.Right);
 
-            return node.Operator switch
+            checked // ошибки по перепрлнению вкл
             {
-                '+' => TryAdd(left, right),
-                '-' => TrySub(left, right),
-                '*' => TryMul(left, right),
-                '/' => TryDiv(left, right),
-                _ => throw new InvalidOperationException($"Неизвестный оператор: {node.Operator}")
-            };
-        }
-
-        private static dynamic TrySub(dynamic left, dynamic right)
-        {
-            dynamic result;
-            result = left - right;
-
-            if (left is int && right is int)
-            {
-                if (left > 0 && right < 0)
+                try
                 {
-                    if (result < 0)
-                        throw new InvalidOperationException("Числа слишком большие для '-'");
+                    return node.Operator switch
+                    {
+                        '+' => left + right,
+                        '-' => left - right,
+                        '*' => TryMul(left, right),
+                        '/' => TryDiv(left, right),
+                        _ => throw new InvalidOperationException($"Неизвестный оператор: {node.Operator}")
+                    };
                 }
-                else if (left < 0 && right > 0)
+                catch (OverflowException)
                 {
-                    if (result > 0)
-                        throw new InvalidOperationException("Числа слишком большие для '-'");
+                    throw new OverflowException($"Переполнение при операции '{node.Operator}'");
                 }
             }
-
-            return result;
-        }
-
-        private static dynamic TryAdd(dynamic left, dynamic right)
-        {
-            dynamic result;
-            result = left + right;
-            
-            if (left is int && right is int)
-            {
-                if (left > 0 && right > 0)
-                {
-                    if (result < 0)
-                        throw new InvalidOperationException("Числа слишком большие для '+'");
-                }
-                else if (left < 0 && right < 0)
-                {
-                    if (result > 0)
-                        throw new InvalidOperationException("Числа слишком большие для '+'");
-                }
-                else if (result > 0)
-                {
-                    throw new InvalidOperationException("Числа слишком большие для '+'");
-                }
-            }
-
-            return result;
         }
 
 
@@ -113,18 +75,7 @@ namespace TimeCalcREFACTORED
             }
             catch
             {
-                throw new InvalidOperationException($"Умножение {left} на {right} невозможно");
-            }
-
-            if (left is int intLeft && right is int intRight)
-            {
-                long bigLeft = (long)intLeft;
-                long bigRight = (long)intRight;
-                long bigResult = bigLeft * bigRight;
-                if (bigResult != result)
-                {
-                    throw new InvalidOperationException("Числа слишком большие для '*'");
-                }
+                throw new InvalidOperationException("Умножение времени на время");
             }
 
             return result;
