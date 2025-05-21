@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace TimeCalcREFACTORED
 {
@@ -68,17 +69,25 @@ namespace TimeCalcREFACTORED
         /// <exception cref="InvalidOperationException">Time * Time</exception>
         private static dynamic TryMul(dynamic left, dynamic right)
         {
-            dynamic result;
-            try 
+            checked
             {
-                result = left * right;
-            }
-            catch
-            {
-                throw new InvalidOperationException("Умножение времени на время");
-            }
+                dynamic result;
+                try
+                {
+                    result = left * right;
+                }
+                catch(OverflowException)
+                {
+                    throw new OverflowException($"Переполнение при операции '*'");
+                }
+                catch
+                {
+                    throw new InvalidOperationException("Умножение времени на время");
+                }
 
-            return result;
+                return result;
+            }
+            
         }
 
         /// <summary>
@@ -91,17 +100,20 @@ namespace TimeCalcREFACTORED
         /// <exception cref="InvalidOperationException">int / Time</exception>
         private static dynamic TryDiv(dynamic left, dynamic right)
         {
-            try 
+            checked
             {
-                return left / right;
-            }
-            catch (DivideByZeroException)
-            {
-                throw new DivideByZeroException("Деление на ноль");
-            }
-            catch
-            {
-                throw new InvalidOperationException("Деление числа на время");
+                try
+                {
+                    return left / right;
+                }
+                catch (DivideByZeroException)
+                {
+                    throw new DivideByZeroException("Деление на ноль");
+                }
+                catch
+                {
+                    throw new InvalidOperationException("Деление числа на время");
+                }
             }
         }
     }

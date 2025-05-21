@@ -43,7 +43,7 @@ namespace TimeCalcREFACTORED
         {
             if (e.Key == Key.Enter)
             {
-                e.Handled = true; // Помечаем событие как обработанное
+                e.Handled = true; // событие обработанно
                 OnEnterClick(sender, e);
             }
 

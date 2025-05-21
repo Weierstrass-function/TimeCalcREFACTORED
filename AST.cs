@@ -61,7 +61,7 @@ namespace TimeCalcREFACTORED
                 )
             {
                 _tokens.Pop();
-                node = new OperatorNode(ParseTerm(), tokenVal, node);
+                node = new OperatorNode(ParseExpr(), tokenVal, node);
             }
 
             return node;
