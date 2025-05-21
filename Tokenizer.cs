@@ -132,7 +132,7 @@ namespace TimeCalcREFACTORED
                 else
                 {
                     if (input[i] == ':')
-                        throw new FormatException($"справа и слева от ':' должны стоять числа");
+                        throw new FormatException("слева от ':' должна стоять число");
 
                     throw new FormatException($"Недопустимый символ '{input[i]}'");
                 }
